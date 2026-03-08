@@ -16125,7 +16125,7 @@ CDocument.prototype.Load_DocumentStateAfterLoadChanges = function(State, updateS
 			this.ViewPosition.AnchorPos = State.StartPos;
 		else if (AscWord.ViewPositionType.SelectionEnd === this.ViewPosition.Type)
 			this.ViewPosition.AnchorPos = State.EndPos;
-    //console.log ("Restored view position: anchor pos %o align top " + this.ViewPosition.AlignTop + " distance " + this.ViewPosition.Distance + " type " + this.ViewPosition.Type + " saved offset " + this.ViewPosition.AnchorSavedTopOffset, this.ViewPosition.AnchorPos);
+    console.log ("Restored view position: anchor pos %o align top " + this.ViewPosition.AlignTop + " distance " + this.ViewPosition.Distance + " type " + this.ViewPosition.Type + " saved offset " + this.ViewPosition.AnchorSavedTopOffset, this.ViewPosition.AnchorPos);
 	}
 	else
 	{
