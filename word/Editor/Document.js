@@ -16104,7 +16104,6 @@ CDocument.prototype.Load_DocumentStateAfterLoadChanges = function(State, updateS
 			this.ViewPosition.AnchorPos = State.StartPos;
 		else if (AscWord.ViewPositionType.SelectionEnd === this.ViewPosition.Type)
 			this.ViewPosition.AnchorPos = State.EndPos;
-
 	}
 	else
 	{
