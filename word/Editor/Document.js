@@ -16044,7 +16044,7 @@ CDocument.prototype.private_StoreViewPositions = function(state)
 					{
 						// Can't find an anchor on the right page, so calculate the offset
 						let offset = this.DrawingDocument.ConvertCoordsToAnotherPage(0, newXyInfo.Y, newXyInfo.Page, topViewPage);
-						state.AnchorDistance = offset.Y - viewPort[0].Y;
+						state.AnchorDistance = this.DrawingDocument.GetMMPerDot(offset.Y) - viewPort[0].Y;
             console.log ("Cannot find anchor on the right page, calculating offset: " + state.AnchorDistance);
 					}
 				}
