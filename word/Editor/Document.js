@@ -5223,6 +5223,7 @@ CDocument.prototype.CheckViewPosition = function()
 			delta = this.DrawingDocument.GetMMPerDot(delta);
       console.log ("Attempting to correct scroll in CheckViewPosition by " + delta + " drawingPage.top = " + (this.DrawingDocument.m_arrPages[0].drawingPage.top));
 			this.ViewPosition.Distance -= delta;
+      this.ViewPosition.AnchorSavedTopOffset = 0; // Do not do this again!
 		}
 	}
 
