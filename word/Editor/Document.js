@@ -15885,7 +15885,9 @@ CDocument.prototype.private_StoreViewPositions = function(state)
 	// может попасть в поле экрана и тогда скролл потянется сразу за ним, что может быть неверным
 	if (-1 !== cursorPage
 		&& ((viewPort[0].Page === cursorPage && cursorY + cursorH > viewPort[0].Y)
-			|| (viewPort[1].Page === cursorPage && cursorY < viewPort[1].Y)))
+			|| (viewPort[1].Page === cursorPage && cursorY < viewPort[1].Y)
+      || (cursorPage > viewPort[0].Page && cursorPage < viewPort[1].Page) 
+    ))
 	{
 		let distance = 0;
 		let alignTop = true;
@@ -15895,11 +15897,26 @@ CDocument.prototype.private_StoreViewPositions = function(state)
 			distance = cursorY - viewPort[0].Y;
 			alignTop = true;
 		}
-		else
+		else if (viewPort[1].Page == cursorPage)
 		{
 			distance = viewPort[1].Y - cursorY;
 			alignTop = false;
 		}
+    else
+    {
+			distance = viewPort[1].Y - cursorY;
+		  alignTop = false;
+      if (this.DrawingDocument.m_arrPages.length >= viewPort[1].Page)
+      {
+        distance -= this.DrawingDocument.GetMMPerDot(this.DrawingDocument.m_arrPages[cursorPage].drawingPage.top - 
+          this.DrawingDocument.m_arrPages[viewPort[1].Page].drawingPage.top);
+      } else {
+        let pageOffset = viewPort[1].Page - cursorPage;
+        let pageHeight = this.Pages[cursorPage] ? this.Pages[cursorPage].Height : 297;
+        distance += pageHeight * pageOffset;
+        distance += cursorH * pageOffset;
+      }
+    }
 		
 		state.AnchorAlignTop = alignTop;
 		state.AnchorDistance = distance
@@ -16100,7 +16117,7 @@ CDocument.prototype.Load_DocumentStateAfterLoadChanges = function(State, updateS
 			Type                 : State.AnchorType,
 			AnchorSavedTopOffset : State.AnchorSavedTopOffset
 		};
-		
+
 		if (AscWord.ViewPositionType.Cursor === this.ViewPosition.Type)
 			this.ViewPosition.AnchorPos = State.Pos;
 		else if (AscWord.ViewPositionType.SelectionStart === this.ViewPosition.Type)
