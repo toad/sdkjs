@@ -5210,8 +5210,22 @@ CDocument.prototype.CheckViewPosition = function()
 	let distance       = this.ViewPosition.Distance;
 	let savedTopOffset = this.ViewPosition.AnchorSavedTopOffset;
 
-  console.log ("CheckViewPosition: Saved anchorPos = " + anchorPos + " alignTop = " + alignTop + " distance = " + distance + " savedTopOffset = " +savedTopOffset);
+  //console.log ("CheckViewPosition: Saved anchorPos = " + anchorPos + " alignTop = " + alignTop + " distance = " + distance + " savedTopOffset = " +savedTopOffset);
 	
+	// Check for scrolling event since the last update
+	// If so, we don't want the anchor/distance to invalidate the scroll!
+	// This is a race condition that happens quite often when scrolling due to the FullRecalc conditions above!
+  // Depends on having the relevant information to recover (we usually will have but not always) and the fact that we're about to clobber ViewPosition
+  // FIXME This does seem to occur during scrolling but is it needed?
+	if (savedTopOffset && this.ViewPosition && this.DrawingDocument.m_arrPages && this.DrawingDocument.m_arrPages[0].drawingPage) {
+		if (savedTopOffset != this.DrawingDocument.m_arrPages[0].drawingPage.top) {
+			let delta = savedTopOffset - this.DrawingDocument.m_arrPages[0].drawingPage.top;
+			delta = this.DrawingDocument.GetMMPerDot(delta);
+      console.log ("Attempting to correct scroll in CheckViewPosition by " + delta + " drawingPage.top = " + (this.DrawingDocument.m_arrPages[0].drawingPage.top));
+			this.ViewPosition.Distance -= delta;
+		}
+	}
+
 	if (!anchorPos[0] || this !== anchorPos[0].Class)
 	{
 		this.RecalculateCurPos();
@@ -5227,20 +5241,6 @@ CDocument.prototype.CheckViewPosition = function()
 	
 	this.ViewPosition     = null;
 	this.NeedUpdateTarget = false;
-
-	// Check for scrolling event since the last update
-	// If so, we don't want the anchor/distance to invalidate the scroll!
-	// This happens quite often when scrolling due to the FullRecalc conditions above!
-	if (savedTopOffset) {
-		if (savedTopOffset != this.DrawingDocument.m_arrPages[0].drawingPage.top) {
-			let delta = savedTopOffset - this.DrawingDocument.m_arrPages[0].drawingPage.top;
-			delta = this.DrawingDocument.GetMMPerDot(delta);
-      // FIXME This will crash! Maybe put it before the recalculate?
-      // FIXME Or maybe in RecalculateCurPos()?
-      console.log ("Attempting to correct scroll in CheckViewPosition by " + delta + " drawingPage.top = " + (this.drawingDocument.m_arrPages[0].drawingPage.top));
-			this.ViewPosition.Distance -= delta;
-		}
-	}
 
 	function GetXY(docPos)
 	{
