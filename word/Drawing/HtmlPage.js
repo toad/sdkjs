@@ -2845,7 +2845,6 @@ function CEditorPage(api)
 		}
 		catch (err)
 		{
-      console.log ("Caught %o in onTimerScroll()", err);
 		}
 	};
 

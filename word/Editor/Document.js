@@ -5157,20 +5157,6 @@ CDocument.prototype.OnContentReDraw                          = function(StartPag
 };
 CDocument.prototype.CheckTargetUpdate = function()
 {
-  // Log page changes in the rendering pipeline - we do not need visibleRegion otherwise
-	let viewPort = this.DrawingDocument.GetVisibleRegion();
-
-  if (viewPort)
-  {
-    if ((this.xrLastTopPage != null && this.xrLastTopPage != viewPort[0].Page) ||
-		  (this.xrLastBottomPage != null && this.xrLastBottomPage != viewPort[1].Page)) {
-  		console.log("Page "+viewPort[0].Page+" to " +viewPort[1].Page);
-	  }
-  }
-	
-	this.xrLastTopPage = viewPort[0].Page;
-	this.xrLastBottomPage = viewPort[1].Page;
-	
 	// TODO: Эту заглушку стоит поменять на что-то более понятное
 	// Документ ни разу не был расчитан
 	if (this.RecalcId <= 0)
@@ -5230,7 +5216,7 @@ CDocument.prototype.CheckViewPosition = function()
 	let distance       = this.ViewPosition.Distance;
 	let savedTopOffset = this.ViewPosition.AnchorSavedTopOffset;
 
-  console.log ("CheckViewPosition: Saved anchorPos = %o alignTop = " + alignTop + " distance = " + distance + " savedTopOffset = " +savedTopOffset, anchorPos);
+  //console.log ("CheckViewPosition: Saved anchorPos = " + anchorPos + " alignTop = " + alignTop + " distance = " + distance + " savedTopOffset = " +savedTopOffset);
 	
 	// Check for scrolling event since the last update
 	// If so, we don't want the anchor/distance to invalidate the scroll!
@@ -5258,10 +5244,7 @@ CDocument.prototype.CheckViewPosition = function()
 	
 	let nInDocumentPosition = anchorPos[0].Position;
 	if (this.FullRecalc.Id && this.FullRecalc.StartIndex <= nInDocumentPosition)
-  {
-    console.log ("Full recalc in progress, id " + this.FullRecalc.Id + " start index " + this.FullRecalc.StartIndex + " <= " + nInDocumentPosition);
 		return;
-  }
 	
 	this.ViewPosition     = null;
 	this.NeedUpdateTarget = false;
