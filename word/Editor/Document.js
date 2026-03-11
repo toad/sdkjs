@@ -5227,7 +5227,7 @@ CDocument.prototype.CheckViewPosition = function()
 		if (savedTopOffset != this.DrawingDocument.m_arrPages[0].drawingPage.top) {
 			let delta = savedTopOffset - this.DrawingDocument.m_arrPages[0].drawingPage.top;
 			delta = this.DrawingDocument.GetMMPerDot(delta);
-      console.log ("Attempting to correct scroll in CheckViewPosition by " + delta + " drawingPage.top = " + (this.DrawingDocument.m_arrPages[0].drawingPage.top));
+      //console.log ("Attempting to correct scroll in CheckViewPosition by " + delta + " drawingPage.top = " + (this.DrawingDocument.m_arrPages[0].drawingPage.top));
 			this.ViewPosition.Distance -= delta;
       this.ViewPosition.AnchorSavedTopOffset = 0; // Do not do this again!
 		}
@@ -5277,12 +5277,12 @@ CDocument.prototype.CheckViewPosition = function()
 	let anchor = GetXY(anchorPos);
 	if (alignTop)
   {
-    console.log ("Scrolling to absolute position X = " + anchor.X + " Y = " + anchor.Y + " - " + distance + " on page " + anchor.Page + " (align top)");
+    //console.log ("Scrolling to absolute position X = " + anchor.X + " Y = " + anchor.Y + " - " + distance + " on page " + anchor.Page + " (align top)");
 		this.DrawingDocument.m_oWordControl.ScrollToAbsolutePosition(anchor.X, anchor.Y - distance, anchor.Page);
   }
 	else
   {
-    console.log ("Scrolling to absolute position X = " + anchor.X + " Y = " + anchor.Y + " - " + distance + " on page " + anchor.Page + " (align bottom)");
+    //console.log ("Scrolling to absolute position X = " + anchor.X + " Y = " + anchor.Y + " - " + distance + " on page " + anchor.Page + " (align bottom)");
 		this.DrawingDocument.m_oWordControl.ScrollToAbsolutePosition(anchor.X, anchor.Y + distance, anchor.Page, true);
   }
 	
@@ -15847,7 +15847,7 @@ CDocument.prototype.private_StoreViewPositions = function(state)
 		state.AnchorType           = this.ViewPosition.Type;
 		state.AnchorPos            = this.ViewPosition.AnchorPos;
 		state.AnchorSavedTopOffset = this.ViewPosition.AnchorSavedTopOffset;
-    console.log ("Saving view positions in StoreViewPositions: anchor align top = " + state.AnchorAlignTop + " anchor distance = " + state.AnchorDistance + " state.AnchorType = " + state.AnchorType + " state.AnchorPos = " + state.AnchorPos + " state.AnchorSavedTopOffset = " + state.AnchorSavedTopOffset);
+    //console.log ("Saving view positions in StoreViewPositions: anchor align top = " + state.AnchorAlignTop + " anchor distance = " + state.AnchorDistance + " state.AnchorType = " + state.AnchorType + " state.AnchorPos = " + state.AnchorPos + " state.AnchorSavedTopOffset = " + state.AnchorSavedTopOffset);
 		return;
 	}
 	
@@ -15929,7 +15929,7 @@ CDocument.prototype.private_StoreViewPositions = function(state)
 		state.AnchorDistance = distance
 		state.AnchorType     = anchorType;
 		state.AnchorPos      = null;
-    console.log ("Saving position with visible cursor: alignTop = " + state.AnchorAlignTop + " distance = " + state.AnchorDistance + " type " + state.AnchorType + " position null");
+    //console.log ("Saving position with visible cursor: alignTop = " + state.AnchorAlignTop + " distance = " + state.AnchorDistance + " type " + state.AnchorType + " position null");
 	}
 	else
 	{
@@ -16002,12 +16002,11 @@ CDocument.prototype.private_StoreViewPositions = function(state)
 
     if (currentAnchorPage == topViewPage)
     {
-      console.log ("StoreViewPositions: current anchor page = topViewPage = " + currentAnchorPage + " saving type = " + state.AnchorType + " pos " + state.AnchorPos + " align top = true distance = " + state.AnchorDistance);
+      //console.log ("StoreViewPositions: current anchor page = topViewPage = " + currentAnchorPage + " saving type = " + state.AnchorType + " pos " + state.AnchorPos + " align top = true distance = " + state.AnchorDistance);
     }
     else
-//		if (currentAnchorPage !== topViewPage)
 		{
-      console.log ("StoreViewPositions: current anchor page is " + currentAnchorPage + " but top view page is " + topViewPage);
+      //console.log ("StoreViewPositions: current anchor page is " + currentAnchorPage + " but top view page is " + topViewPage);
 			// Calculate the desired Y position relative to viewPort[0].Page
 			let desiredY = state.AnchorDistance; // The distance from the top of the viewport
 			let pageHeight = this.Pages[topViewPage] ? this.Pages[topViewPage].Height : 297; // Default A4 height
@@ -16044,14 +16043,14 @@ CDocument.prototype.private_StoreViewPositions = function(state)
 						newXyInfo = altXyInfo;
 						state.AnchorPos = newAnchorPos;
 						state.AnchorDistance = newXyInfo.Y - viewPort[0].Y;
-            console.log ("Found an anchor on page " + topViewPage + " pos = " + state.AnchorPos + " distance = " + state.AnchorDistance);
+            //console.log ("Found an anchor on page " + topViewPage + " pos = " + state.AnchorPos + " distance = " + state.AnchorDistance);
 					}
 					else
 					{
 						// Can't find an anchor on the right page, so calculate the offset
 						let offset = this.DrawingDocument.ConvertCoordsToAnotherPage(0, newXyInfo.Y, newXyInfo.Page, topViewPage);
 						state.AnchorDistance = this.DrawingDocument.GetMMPerDot(offset.Y) - viewPort[0].Y;
-            console.log ("Cannot find anchor on the right page, calculating offset: " + state.AnchorDistance);
+            //console.log ("Cannot find anchor on the right page, calculating offset: " + state.AnchorDistance);
 					}
 				}
 			}
@@ -16066,7 +16065,7 @@ CDocument.prototype.private_StoreViewPositions = function(state)
 
 					// Update AnchorDistance with the new Y position
 					state.AnchorDistance = fallbackXyInfo.Y - viewPort[0].Y;
-          console.log ("Fallback: anchor distance = " + state.AnchorDistance);
+          //console.log ("Fallback: anchor distance = " + state.AnchorDistance);
 				}
 			}
 		}
@@ -16075,7 +16074,7 @@ CDocument.prototype.private_StoreViewPositions = function(state)
 	// Record the scroll position in case we get a scroll event before the frame callback
 	if (this.DrawingDocument.m_arrPages.length) {
 		state.AnchorSavedTopOffset = this.DrawingDocument.m_arrPages[0].drawingPage.top;
-    console.log ("Recording scroll position for callback: " + state.AnchorSavedTopOffset);
+    //console.log ("Recording scroll position for callback: " + state.AnchorSavedTopOffset);
 	}
 };
 CDocument.prototype.Load_DocumentStateAfterLoadChanges = function(State, updateSelection)
@@ -16131,12 +16130,12 @@ CDocument.prototype.Load_DocumentStateAfterLoadChanges = function(State, updateS
 			this.ViewPosition.AnchorPos = State.StartPos;
 		else if (AscWord.ViewPositionType.SelectionEnd === this.ViewPosition.Type)
 			this.ViewPosition.AnchorPos = State.EndPos;
-    console.log ("Restored view position: anchor pos %o align top " + this.ViewPosition.AlignTop + " distance " + this.ViewPosition.Distance + " type " + this.ViewPosition.Type + " saved offset " + this.ViewPosition.AnchorSavedTopOffset, this.ViewPosition.AnchorPos);
+    //console.log ("Restored view position: anchor pos %o align top " + this.ViewPosition.AlignTop + " distance " + this.ViewPosition.Distance + " type " + this.ViewPosition.Type + " saved offset " + this.ViewPosition.AnchorSavedTopOffset, this.ViewPosition.AnchorPos);
 	}
 	else
 	{
 		this.ViewPosition = null;
-    console.log ("Restored no view position because undefined anchor type");
+    //console.log ("Restored no view position because undefined anchor type");
 	}
 
 	// TODO: По-хорошему, надо чтобы те места откуда вызывался данный метод сами обновляли состояние, если там оно нужно
