@@ -5184,9 +5184,15 @@ CDocument.prototype.CheckTargetUpdate = function()
 		this.DrawingDocument.UpdateTargetCheck = false;
 	}
 	
-	if (!this.NeedUpdateTarget)
+	if (!this.NeedUpdateTarget && !this.ViewPosition)
 		return;
 	
+  // Race condition: if there is a ViewPosition to apply, and we are recalculating, it 
+  // needs to wait until after the recalcuation is complete. But the recalculation 
+  // clears NeedUpdateTarget, so it's never applied. Which means it sticks around until 
+  // by chance we get to CheckTargetUpdate() and are not currently recalculating, at 
+  // which point it applies the old position and jumps back up. So we need to call 
+  // CheckViewPosition() if there is one even if this.NeedUpdateTarget is false.
 	if (this._isSelectionVisible() && !this.ForceScrollToSelectionEnd)
 	{
 		this.NeedUpdateTarget = false;
